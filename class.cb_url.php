@@ -1,9 +1,41 @@
 <?php
+/* This file is part of cbutil.
+ * Copyright © 2011-2012 stiftung kulturserver.de ggmbh <github@culturebase.org>
+ *
+ * cbutil is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * cbutil is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with cbutil.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 class CbUrl {
-   // --------------------------------------------------------------------------
-   // URLs
-   // --------------------------------------------------------------------------
+   /**
+    * This regular expression is used to detect locals AT THE BEGINNING of URLs.
+    * It is not designed to parse arbitrary URLs, because detecting locales in
+    * those is way to error prone. Locale-like things are too common in regular
+    * URLs. We only parse those at the beginning because thats where the locale
+    * is in all of our URLs. At the moment, the following locale notations are
+    * supported:
+    *
+    *  - de_DE
+    *  - de
+    *  - deu
+    *
+    * Add other ones as needed, but make sure that it still works for the cases
+    * listed above. Also, it is important that the match group numbers in
+    * CbUtil::getUrlWithLocale() get adjusted accordingly. Lastly, make sure
+    * that your new locale format is listed above to ensure that future
+    * maintainers are still able to figure out what this thing needs to do.
+    */
+   const LOCALE_REGEXP = '/^([a-z]{2}_[A-Z]{2}|[a-z]{2,3})(\/|$)/';
 
    /**
     * Returns the website's root directory. Trailing slashes are always omitted.
@@ -59,26 +91,6 @@ class CbUrl {
       return 'http'.($_SERVER['HTTPS']?'s':'').'://'.$_SERVER['HTTP_HOST'].
               self::getDocumentRoot();
    }
-
-   /**
-    * This regular expression is used to detect locals AT THE BEGINNING of URLs.
-    * It is not designed to parse arbitrary URLs, because detecting locales in
-    * those is way to error prone. Locale-like things are too common in regular
-    * URLs. We only parse those at the beginning because thats where the locale
-    * is in all of our URLs. At the moment, the following locale notations are
-    * supported:
-    *
-    *  - de_DE
-    *  - de
-    *  - deu
-    *
-    * Add other ones as needed, but make sure that it still works for the cases
-    * listed above. Also, it is important that the match group numbers in
-    * CbUtil::getUrlWithLocale() get adjusted accordingly. Lastly, make sure
-    * that your new locale format is listed above to ensure that future
-    * maintainers are still able to figure out what this thing needs to do.
-    */
-   const LOCALE_REGEXP = '/^([a-z]{2}_[A-Z]{2}|[a-z]{2,3})(\/|$)/';
 
    /**
     * Changes the locale in a standard URL. The URL is expected to be in one
